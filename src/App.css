@@ -1,0 +1,101 @@
+/* General App Style */
+.app {
+  font-family: Arial, sans-serif;
+  padding-bottom: 80px;
+  background: #f9f5f0;
+}
+
+/* Header Bar - Brown */
+.header {
+  background: #8a5a44; /* بني */
+  padding: 20px;
+  color: white;
+  text-align: center;
+}
+
+.logo {
+  margin: 0;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* Search Bar */
+.search-bar {
+  background: #e8d6c0;
+  padding: 15px;
+  margin: 15px;
+  border-radius: 12px;
+}
+
+/* Categories */
+.categories {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  margin-left: 10px;
+}
+
+.category-btn {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: none;
+  background: #d6c4b4;
+}
+
+.category-btn.active {
+  background: #8a5a44;
+  color: #fff;
+}
+
+/* Products Grid */
+.products-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  padding: 15px;
+}
+
+/* Product Card - White with beige shadow */
+.product-card {
+  background: #ffffff; /* أبيض */
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(194, 164, 128, 0.35); /* ظل بيچ */
+  transition: all 0.25s ease-in-out;
+  cursor: pointer;
+}
+
+/* Hover Effect */
+.product-card:hover {
+  transform: scale(1.04); /* تكبر شوية */
+  box-shadow: 0 6px 18px rgba(150, 120, 90, 0.45); /* ظل أقوى */
+}
+
+/* Product Image */
+.product-image {
+  background: #e8d6c0; /* بيج خفيف */
+  height: 100px;
+  border-radius: 10px;
+}
+
+/* Bottom Nav - Brown */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #8a5a44; /* بني */
+  display: flex;
+  justify-content: space-around;
+  padding: 15px 0;
+}
+
+.nav-item {
+  color: white;
+  background: transparent;
+  border: none;
+}
+
+.nav-item.active {
+  font-weight: bold;
+  text-decoration: underline;
+}
