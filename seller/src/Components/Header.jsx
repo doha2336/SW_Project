@@ -1,16 +1,18 @@
-import React from 'react'
+export default function Header({ setSearchQuery }) {
+  return (
+    <div className="header">
+      <div>
+        <h1>Dashboard</h1>
+        <p className="subtitle">Overview of your marketplace</p>
+      </div>
 
-
-export default function Header(){
-return (
-<header className="header">
-<div>
-<h1>Welcome, Eco Seller!</h1>
-<p className="subtitle">Here's your sales and activity summary for today.</p>
-</div>
-<div className="search-box">
-<input placeholder="Search listings..." />
-</div>
-</header>
-)
+      <div className="search-box">
+        <input
+          type="text"
+          placeholder="Search listings…"
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+    </div>
+  );
 }

@@ -1,47 +1,39 @@
-import React from 'react'
-import { FiEdit2, FiEye, FiTrash2 } from 'react-icons/fi'
+export default function ListingsTable({ searchQuery }) {
 
+  const listings = [
+    { name: "Antique Wooden Chair", price: "$120", status: "Active" },
+    { name: "Vintage Oak Planks", price: "$80", status: "Active" },
+    { name: "Reclaimed Metal Pipes", price: "$60", status: "Sold" },
+  ];
 
-const rows = [
-{title:'Vintage Wooden Chair', price:'$45.00', status:'Active'},
-{title:'Set of Ceramic Mugs', price:'$18.50', status:'Active'},
-{title:'Antique Brass Lamp', price:'$75.00', status:'Sold Out'},
-]
+  // STEP 3 — apply search filter
+  const filtered = listings.filter(item =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
+  return (
+    <div className="listings">
+      <h2>Latest Listings</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Status</th>
+          </tr>
+        </thead>
 
-export default function ListingsTable(){
-return (
-<section className="listings">
-<h2>My Listings</h2>
-<table>
-<thead>
-<tr>
-<th>Product</th>
-<th>Price</th>
-<th>Status</th>
-<th>Actions</th>
-</tr>
-</thead>
-<tbody>
-{rows.map((r,i)=> (
-<tr key={i}>
-<td className="product">
-<img src="/mnt/data/screen.png" alt="thumb" />
-<div>
-<div className="title">{r.title}</div>
-</div>
-</td>
-<td>{r.price}</td>
-<td><span className={`badge ${r.status==='Active'? 'active':''}`}>{r.status}</span></td>
-<td className="actions">
-<FiEdit2 />
-<FiEye />
-<FiTrash2 />
-</td>
-</tr>
-))}
-</tbody>
-</table>
-</section>
-)
+        <tbody>
+          {filtered.map((item, i) => (
+            <tr key={i}>
+              <td>{item.name}</td>
+              <td>{item.price}</td>
+              <td>{item.status}</td>
+            </tr>
+          ))}
+        </tbody>
+
+      </table>
+    </div>
+  );
 }

@@ -19,11 +19,38 @@
 .name{font-weight:700}
 .email{font-size:13px;color:var(--muted)}
 .nav{display:flex;flex-direction:column;gap:8px;margin-top:10px}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;background:transparent;border:none;cursor:pointer;font-weight:600;color:var(--text);font-size:14px}
+.nav-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px;
+  border-radius:10px;
+  background:transparent;
+  border:none;
+  cursor:pointer;
+  font-weight:600;
+  color:var(--text);
+  font-size:14px;
+  text-decoration: none;  /* Add this */
+}
+
 .nav-item svg{font-size:18px}
 .nav-item.active{background:linear-gradient(180deg, #f0f3e6, #f8f9f0)}
-.add-listing{margin-top:auto;padding:12px;border-radius:12px;background:#6d4b3a;color:white;border:none;font-weight:700}
 
+.add-listing{
+  margin-top:auto;
+  padding:12px;
+  border-radius:12px;
+  background:#6d4b3a;
+  color:white;
+  border:none;
+  font-weight:700;
+  text-decoration: none;        /* Add this */
+  display: flex;               /* Add this */
+  align-items: center;         /* Add this */
+  gap: 8px;                    /* Add this */
+  justify-content: center;     /* Add this */
+}
 
 /* Main area */
 .main-area{flex:1;padding:34px}
@@ -75,3 +102,104 @@ th,td{padding:16px;text-align:left;border-bottom:1px solid rgba(0,0,0,0.04)}
 .content-grid{grid-template-columns:1fr}
 .sidebar{display:none}
 }
+
+/* Create Listing Page */
+.form-card {
+  background: var(--card);
+  padding: 26px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 6px;
+}
+
+.form-group.small {
+  max-width: 220px;
+}
+
+.form-group label {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.form-card input,
+.form-card select,
+.form-card textarea {
+  padding: 12px;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 10px;
+  background: white;
+  font-size: 15px;
+}
+
+.form-card textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+/* Upload Box */
+.upload-box {
+  border: 2px dashed rgba(0,0,0,0.15);
+  padding: 30px;
+  border-radius: 14px;
+  text-align: center;
+  cursor: pointer;
+  background: #fafafa;
+}
+
+.upload-icon {
+  font-size: 26px;
+  margin-bottom: 6px;
+}
+
+.preview-row {
+  display: flex;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.preview-img {
+  width: 130px;
+  height: 130px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+/* Buttons */
+.buttons-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn-secondary {
+  background: #dadada;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 700;
+  border: none;
+}
+
+.btn-primary {
+  background: #6d4b3a;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 700;
+  border: none;
+}
+
