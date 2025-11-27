@@ -1,32 +1,122 @@
-import React from 'react'
-import { NavLink } from "react-router-dom";
-import { FiGrid, FiList, FiPackage, FiMail, FiBarChart2, FiSettings, FiPlusCircle } from 'react-icons/fi'
+import { useState } from "react";
+import { FiUpload } from "react-icons/fi";
 
-export default function Sidebar(){
+export default function AddListing() {
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [images, setImages] = useState([]);
+
+  // Handle image upload & preview
+  function handleImages(e) {
+    const files = Array.from(e.target.files);
+    const previews = files.map(file => ({
+      file,
+      preview: URL.createObjectURL(file)
+    }));
+    setImages(prev => [...prev, ...previews]);
+  }
+
+  function publishListing() {
+    const listing = {
+      name,
+      category,
+      description,
+      price,
+      images
+    };
+
+    console.log("Publishing Listing:", listing);
+    alert("Listing Published!");
+  }
+
   return (
-    <aside className="sidebar">
-      <div className="profile">
-        <img src="/avatar.png" alt="avatar" className="avatar" />
+    <div className="main-area">
+      <div className="header">
         <div>
-          <div className="name">Eco Seller</div>
-          <div className="email">seller@example.com</div>
+          <h1>Create a New Listing</h1>
         </div>
       </div>
-      
-      <nav className="nav">
-        <NavLink to="/" className="nav-item">
-          <FiGrid/> <span>Dashboard</span>
-        </NavLink>
-        <button className="nav-item"><FiList/> <span>My Listings</span></button>
-        <button className="nav-item"><FiPackage/> <span>Orders</span></button>
-        <button className="nav-item"><FiMail/> <span>Messages</span></button>
-        <button className="nav-item"><FiBarChart2/> <span>Analytics</span></button>
-        <button className="nav-item"><FiSettings/> <span>Settings</span></button>
-      </nav>
-      
-      <NavLink to="/create-listing" className="add-listing">
-        <FiPlusCircle /> Add New Listing
-      </NavLink>
-    </aside>
-  )
+
+      <div className="form-card">
+        {/* Product Name + Category */}
+        <div className="form-row">
+          <div className="form-group">
+            <label>Product Name</label>
+            <input
+              type="text"
+              placeholder="e.g. Reclaimed Oak Beams"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Category</label>
+            <select value={category} onChange={(e) => setCategory(e.target.value)}>
+              <option value="">Select a category</option>
+              <option value="wood">Wood</option>
+              <option value="metal">Metal</option>
+              <option value="furniture">Furniture</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Description */}
+        <div className="form-group">
+          <label>Detailed Description</label>
+          <textarea
+            placeholder="Describe the product’s condition, dimensions, and origin…"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          ></textarea>
+        </div>
+
+        {/* Price */}
+        <div className="form-group small">
+          <label>Price</label>
+          <input
+            type="number"
+            placeholder="$ 0.00"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+          />
+        </div>
+
+        {/* Upload Photos */}
+        <div className="form-group">
+          <label>Product Photos</label>
+
+          <label className="upload-box">
+            <FiUpload className="upload-icon" />
+            <div>Click to upload or drag and drop</div>
+            <small>PNG, JPG, SVG (max 800x400px)</small>
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleImages}
+              hidden
+            />
+          </label>
+
+          {/* Preview images */}
+          <div className="preview-row">
+            {images.map((img, index) => (
+              <img key={index} src={img.preview} alt="" className="preview-img" />
+            ))}
+          </div>
+        </div>
+
+        {/* Buttons */}
+        <div className="buttons-row">
+          <button className="btn-secondary">Save as Draft</button>
+          <button className="btn-primary" onClick={publishListing}>
+            Publish Listing
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
