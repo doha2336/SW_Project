@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavLink } from "react-router-dom";  // ADD THIS IMPORT
+import { NavLink } from "react-router-dom";
 import { FiGrid, FiList, FiPackage, FiMail, FiBarChart2, FiSettings, FiPlusCircle } from 'react-icons/fi'
 
 export default function Sidebar(){
@@ -14,18 +14,20 @@ export default function Sidebar(){
       </div>
       
       <nav className="nav">
-        <NavLink to="/" className="nav-item">  {/* CHANGE TO NavLink */}
+        <NavLink to="/" className="nav-item">
           <FiGrid/> <span>Dashboard</span>
         </NavLink>
-        <button className="nav-item"><FiList/> <span>My Listings</span></button>
+        <NavLink to="/listings" className="nav-item">  {/* CHANGED TO NavLink */}
+          <FiList/> <span>My Listings</span>
+        </NavLink>
         <button className="nav-item"><FiPackage/> <span>Orders</span></button>
         <button className="nav-item"><FiMail/> <span>Messages</span></button>
         <button className="nav-item"><FiBarChart2/> <span>Analytics</span></button>
         <button className="nav-item"><FiSettings/> <span>Settings</span></button>
       </nav>
       
-      <NavLink to="/create-listing" className="add-listing">  {/* CHANGE TO NavLink */}
-        <FiPlusCircle /> Add New Listing  {/* ADDED ICON */}
+      <NavLink to="/create-listing" className="add-listing">
+        <FiPlusCircle /> Add New Listing
       </NavLink>
     </aside>
   )

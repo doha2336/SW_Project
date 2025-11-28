@@ -203,3 +203,78 @@ th,td{padding:16px;text-align:left;border-bottom:1px solid rgba(0,0,0,0.04)}
   border: none;
 }
 
+/* Listings Page Styles */
+.listings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stats-row {
+  display: flex;
+  gap: 18px;
+}
+
+.stat-card {
+  background: var(--card);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  flex: 1;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.02);
+}
+
+.stat-number {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.stat-label {
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.table-card {
+  background: var(--card);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.02);
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.action-btn.edit {
+  color: #1976d2;
+  border-color: #1976d2;
+}
+
+.action-btn.delete {
+  color: #d32f2f;
+  border-color: #d32f2f;
+}
+
+.price {
+  font-weight: 700;
+  color: var(--text);
+}
