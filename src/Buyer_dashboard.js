@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import product1 from './assets/product1.jpg.jpeg';
 import product2 from './assets/product2.jpg.jpeg';
@@ -155,7 +156,8 @@ export const styles = {
   },
 };
 
-const App = () => {
+const BuyerDashboard = () => {
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState('All');
   const [activeNav, setActiveNav] = useState('Browse');
   const navigate = useNavigate(); // to navigate to product details 
@@ -180,7 +182,27 @@ const App = () => {
       ? products
       : products.filter((product) => product.category === activeCategory);
 
-  const navItems = ['Browse', 'Saved', 'Sell', 'Profile'];
+  const navItems = ['Browse', 'My Purchases', 'Sell', 'Profile'];
+
+  const handleNavClick = (item) => {
+    setActiveNav(item);
+    
+    // Navigate to different pages based on nav item
+    if (item === 'My Purchases') {
+      navigate('/buyer/purchases');
+    }
+    // Add more navigation logic here for other items when you create those pages
+    // else if (item === 'Sell') {
+    //   navigate('/seller');
+    // }
+    // else if (item === 'Profile') {
+    //   navigate('/profile');
+    // }
+  };
+
+  const handleProductClick = (productId) => {
+    navigate(`/product/${productId}`);
+  };
 
   return (
     <div style={styles.app}>
@@ -231,7 +253,7 @@ const App = () => {
           <div 
             key={product.id} 
             style={styles.productCard}
-            onClick={() => navigate(`/product/${product.id}`)}
+            onClick={() => handleProductClick(product.id)}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-5px)';
               e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,0,0,0.15)';
@@ -268,7 +290,7 @@ const App = () => {
                 ...styles.footerItem,
                 ...(activeNav === item ? styles.footerItemActive : {}),
               }}
-              onClick={() => setActiveNav(item)}
+              onClick={() => handleNavClick(item)}
               onMouseEnter={(e) => {
                 if (activeNav !== item) {
                   e.currentTarget.style.color = '#3498db';
@@ -289,4 +311,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default BuyerDashboard;
