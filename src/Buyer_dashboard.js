@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -159,6 +160,8 @@ const BuyerDashboard = () => {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState('All');
   const [activeNav, setActiveNav] = useState('Browse');
+  const navigate = useNavigate(); // to navigate to product details 
+  
 
   const categories = ['All', 'Electronics', 'Furniture', 'Clothing'];
 
