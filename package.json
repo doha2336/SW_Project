@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "software",
   "version": "0.1.0",
   "private": true,
@@ -36,5 +37,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+=======
+  "dependencies": {
+    "react-icons": "^5.5.0",
+    "react-router-dom": "^7.9.6"
+>>>>>>> Seller
   }
 }
