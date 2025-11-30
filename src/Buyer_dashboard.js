@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 
 import product1 from './assets/product1.jpg.jpeg';
@@ -157,6 +158,8 @@ export const styles = {
 const App = () => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [activeNav, setActiveNav] = useState('Browse');
+  const navigate = useNavigate(); // to navigate to product details 
+  
 
   const categories = ['All', 'Electronics', 'Furniture', 'Clothing'];
 
@@ -228,6 +231,7 @@ const App = () => {
           <div 
             key={product.id} 
             style={styles.productCard}
+            onClick={() => navigate(`/product/${product.id}`)}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-5px)';
               e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,0,0,0.15)';
