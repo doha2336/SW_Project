@@ -41,13 +41,64 @@ export default function ProductDetails() {
   };
 
   const handleAddToCart = () => {
-    alert(`Added ${quantity} "${product.name}" to cart!`);
+    // Get existing cart from localStorage
+    const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+    // Check if product already exists in cart
+    const existingItemIndex = existingCart.findIndex(item => item.id === product.id);
+    
+    if (existingItemIndex !== -1) {
+      // Product exists, update quantity
+      existingCart[existingItemIndex].quantity += quantity;
+    } else {
+      // Add new product to cart
+      existingCart.push({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        img: product.img,
+        category: product.category,
+        quantity: quantity
+      });
+    }
+    
+    // Save back to localStorage
+    localStorage.setItem('cart', JSON.stringify(existingCart));
+    
+    // Show success message and option to view cart
+    const viewCart = window.confirm(`✅ Added ${quantity} "${product.name}" to cart!\n\nView cart now?`);
+    if (viewCart) {
+      navigate('/cart');
+    }
   };
 
   const handleBuyNow = () => {
-    alert(`Proceeding to checkout with ${quantity} "${product.name}"`);
-    // Could navigate to checkout page
-    // navigate('/checkout');
+    // Get existing cart from localStorage
+    const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+    // Check if product already exists in cart
+    const existingItemIndex = existingCart.findIndex(item => item.id === product.id);
+    
+    if (existingItemIndex !== -1) {
+      // Product exists, update quantity
+      existingCart[existingItemIndex].quantity += quantity;
+    } else {
+      // Add new product to cart
+      existingCart.push({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        img: product.img,
+        category: product.category,
+        quantity: quantity
+      });
+    }
+    
+    // Save back to localStorage
+    localStorage.setItem('cart', JSON.stringify(existingCart));
+    
+    // Navigate directly to cart for checkout
+    navigate('/cart');
   };
 
   return (
@@ -55,9 +106,24 @@ export default function ProductDetails() {
       {/* Header matching Buyer Dashboard */}
       <header style={styles.header}>
         <h1 style={styles.logo}>ReValue</h1>
-        <button style={styles.backButton} onClick={() => navigate('/buyer')}>
-          ← Back to Dashboard
-        </button>
+        <div style={styles.headerButtons}>
+          <button 
+            style={styles.cartButton} 
+            onClick={() => navigate('/cart')}
+          >
+            🛒 Cart
+            {(() => {
+              const cart = JSON.parse(localStorage.getItem('cart')) || [];
+              const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
+              return itemCount > 0 ? (
+                <span style={styles.cartBadge}>{itemCount}</span>
+              ) : null;
+            })()}
+          </button>
+          <button style={styles.backButton} onClick={() => navigate('/buyer')}>
+            ← Back to Dashboard
+          </button>
+        </div>
       </header>
 
       <div style={styles.content}>
@@ -111,7 +177,7 @@ export default function ProductDetails() {
             <ul style={styles.featuresList}>
               {features.map((feature, index) => (
                 <li key={index} style={styles.featureItem}>
-                  {feature}
+                  ✓ {feature}
                 </li>
               ))}
             </ul>
@@ -140,12 +206,28 @@ export default function ProductDetails() {
             <button 
               style={styles.addToCartButton}
               onClick={handleAddToCart}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#8B4513';
+                e.currentTarget.style.color = 'white';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'white';
+                e.currentTarget.style.color = '#8B4513';
+              }}
             >
               Add to Cart
             </button>
             <button 
               style={styles.buyNowButton}
               onClick={handleBuyNow}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(139, 69, 19, 0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             >
               Buy Now →
             </button>
@@ -170,6 +252,7 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: 'center',
     borderBottom: '1px solid #eaeaea',
+    backgroundColor: 'white',
   },
   logo: {
     color: '#2c3e50',
@@ -177,6 +260,42 @@ const styles = {
     fontWeight: 700,
     letterSpacing: '1px',
     margin: 0,
+  },
+  headerButtons: {
+    display: 'flex',
+    gap: '12px',
+    alignItems: 'center',
+  },
+  cartButton: {
+    background: 'none',
+    border: '2px solid #8B4513',
+    color: '#8B4513',
+    fontSize: '16px',
+    cursor: 'pointer',
+    fontWeight: 600,
+    padding: '8px 16px',
+    borderRadius: '8px',
+    transition: 'all 0.2s',
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+  },
+  cartBadge: {
+    position: 'absolute',
+    top: '-8px',
+    right: '-8px',
+    backgroundColor: '#e74c3c',
+    color: 'white',
+    borderRadius: '50%',
+    padding: '2px 6px',
+    fontSize: '12px',
+    fontWeight: 'bold',
+    minWidth: '20px',
+    height: '20px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   backButton: {
     background: 'none',

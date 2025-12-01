@@ -1,5 +1,5 @@
-
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Cart from "./Cart";
+import PurchaseNotifications from "./PurchaseNotifications";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SignUpPage from "./SignUp";
 import Login from "./login";
@@ -20,14 +20,11 @@ function App() {
         <Route path="/buyer" element={<BuyerDashboard />} />
         <Route path="/buyer/purchases" element={<BuyerPurchases />} />
         
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/notifications" element={<PurchaseNotifications />} /> 
+
         {/* Product Routes */}
         <Route path="/product/:id" element={<ProductDetails />} />
-      </Routes>
-    </Router>
-  );
-}
-
-export default App;
       </Routes>
     </Router>
   );

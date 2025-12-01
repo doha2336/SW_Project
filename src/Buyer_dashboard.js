@@ -1,5 +1,4 @@
-import { useNavigate } from 'react-router-dom';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import product1 from './assets/product1.jpg.jpeg';
@@ -36,7 +35,8 @@ export const styles = {
   },
   mainNav: {
     display: 'flex',
-    gap: '30px',
+    gap: '12px',
+    alignItems: 'center',
   },
   navItem: {
     background: 'none',
@@ -52,6 +52,37 @@ export const styles = {
   navItemActive: {
     color: '#8B4513',
     backgroundColor: 'rgba(139,69,19,0.1)',
+  },
+  cartButton: {
+    background: 'none',
+    border: '2px solid #8B4513',
+    color: '#8B4513',
+    fontSize: '16px',
+    cursor: 'pointer',
+    fontWeight: 600,
+    padding: '8px 16px',
+    borderRadius: '8px',
+    transition: 'all 0.2s',
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+  },
+  cartBadge: {
+    position: 'absolute',
+    top: '-8px',
+    right: '-8px',
+    backgroundColor: '#e74c3c',
+    color: 'white',
+    borderRadius: '50%',
+    padding: '2px 6px',
+    fontSize: '12px',
+    fontWeight: 'bold',
+    minWidth: '20px',
+    height: '20px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   searchSection: {
     textAlign: 'center',
@@ -160,8 +191,54 @@ const BuyerDashboard = () => {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState('All');
   const [activeNav, setActiveNav] = useState('Browse');
-  const navigate = useNavigate(); // to navigate to product details 
-  
+  const [cartCount, setCartCount] = useState(0);
+  const [notificationCount, setNotificationCount] = useState(0);
+
+  // Update cart count from localStorage
+  useEffect(() => {
+    const updateCartCount = () => {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+      setCartCount(totalItems);
+    };
+
+    // Initial load
+    updateCartCount();
+
+    // Listen for storage changes (when cart is updated)
+    window.addEventListener('storage', updateCartCount);
+    
+    // Also check periodically (in case updates happen in same tab)
+    const interval = setInterval(updateCartCount, 1000);
+
+    return () => {
+      window.removeEventListener('storage', updateCartCount);
+      clearInterval(interval);
+    };
+  }, []);
+
+  // Update notification count from localStorage
+  useEffect(() => {
+    const updateNotificationCount = () => {
+      const notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+      const unreadCount = notifications.filter(n => !n.read).length;
+      setNotificationCount(unreadCount);
+    };
+
+    // Initial load
+    updateNotificationCount();
+
+    // Listen for storage changes
+    window.addEventListener('storage', updateNotificationCount);
+    
+    // Also check periodically (in case updates happen in same tab)
+    const interval = setInterval(updateNotificationCount, 1000);
+
+    return () => {
+      window.removeEventListener('storage', updateNotificationCount);
+      clearInterval(interval);
+    };
+  }, []);
 
   const categories = ['All', 'Electronics', 'Furniture', 'Clothing'];
 
@@ -182,7 +259,7 @@ const BuyerDashboard = () => {
       ? products
       : products.filter((product) => product.category === activeCategory);
 
-  const navItems = ['Browse', 'My Purchases', 'Sell', 'Profile'];
+  const navItems = ['Browse', 'My Purchases', 'Notifications', 'Sell', 'Profile'];
 
   const handleNavClick = (item) => {
     setActiveNav(item);
@@ -190,6 +267,8 @@ const BuyerDashboard = () => {
     // Navigate to different pages based on nav item
     if (item === 'My Purchases') {
       navigate('/buyer/purchases');
+    } else if (item === 'Notifications') {
+      navigate('/notifications');
     }
     // Add more navigation logic here for other items when you create those pages
     // else if (item === 'Sell') {
@@ -202,6 +281,14 @@ const BuyerDashboard = () => {
 
   const handleProductClick = (productId) => {
     navigate(`/product/${productId}`);
+  };
+
+  const handleCartClick = () => {
+    navigate('/cart');
+  };
+
+  const handleNotificationsClick = () => {
+    navigate('/notifications');
   };
 
   return (
@@ -221,6 +308,44 @@ const BuyerDashboard = () => {
           <button style={styles.navItem}>Categories</button>
           <button style={styles.navItem}>How it Works</button>
           <button style={styles.navItem}>Contact</button>
+          
+          {/* Notifications Button */}
+          <button 
+            style={styles.cartButton}
+            onClick={handleNotificationsClick}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#8B4513';
+              e.currentTarget.style.color = 'white';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.color = '#8B4513';
+            }}
+          >
+            🔔 Notifications
+            {notificationCount > 0 && (
+              <span style={styles.cartBadge}>{notificationCount}</span>
+            )}
+          </button>
+          
+          {/* Cart Button */}
+          <button 
+            style={styles.cartButton}
+            onClick={handleCartClick}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#8B4513';
+              e.currentTarget.style.color = 'white';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.color = '#8B4513';
+            }}
+          >
+            🛒 Cart
+            {cartCount > 0 && (
+              <span style={styles.cartBadge}>{cartCount}</span>
+            )}
+          </button>
         </nav>
       </header>
 
