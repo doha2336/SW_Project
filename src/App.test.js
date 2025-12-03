@@ -1,10 +1,13 @@
 
 jest.mock('react-router-dom', () => ({
   useNavigate: () => jest.fn(),
-  BrowserRouter: ({ children }) => <div>{children}</div>,
-  Routes: ({ children }) => <div>{children}</div>,
-  Route: ({ children }) => <div>{children}</div>,
+  BrowserRouter: ({ children }) => <>{children}</>,
+  Routes: ({ children }) => <>{children}</>,
+  Route: ({ children }) => <>{children}</>,
+  Link: ({ children }) => <>{children}</>,
 }));
+
+
 
 import { render, screen } from '@testing-library/react';
 import App from './App';
