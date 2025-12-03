@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { FiUpload } from "react-icons/fi";
+{/*import { apiService } from "../Services/api";*/}
 
-export default function AddListing() {
+export default function AddListing({ onListingAdded }) {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
@@ -9,38 +10,62 @@ export default function AddListing() {
   const [images, setImages] = useState([]);
 
   // Handle image upload & preview
-  function handleImages(e) {
-    const files = Array.from(e.target.files);
-    const previews = files.map(file => ({
+  const handleImages = (event) => {
+    const files = Array.from(event.target.files);
+    const previews = files.map((file) => ({
       file,
-      preview: URL.createObjectURL(file)
+      preview: URL.createObjectURL(file),
     }));
-    setImages(prev => [...prev, ...previews]);
-  }
+    setImages((prev) => [...prev, ...previews]);
+  };
 
-  function publishListing() {
-    const listing = {
-      name,
-      category,
-      description,
-      price,
-      images
-    };
+  // Publish listing using FormData for file upload
+  const publishListing = async () => {
+    if (!name || !category || !description || !price) {
+      alert("Please fill in all required fields.");
+      return;
+    }
 
-    console.log("Publishing Listing:", listing);
-    alert("Listing Published!");
-  }
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("category", category);
+    formData.append("description", description);
+    formData.append("price", price);
+
+    images.forEach((img) => {
+      formData.append("image", img.file); // append actual files
+    });
+
+    try {
+      await fetch("http://127.0.0.1:8000/api/listings/", {
+        method: "POST",
+        body: formData,
+      });
+
+      alert("Listing Published!");
+
+      // Clear form
+      setName("");
+      setCategory("");
+      setDescription("");
+      setPrice("");
+      setImages([]);
+
+      // Notify parent to reload dashboard/listings
+      if (onListingAdded) onListingAdded();
+    } catch (err) {
+      console.error(err);
+      alert("Error publishing listing");
+    }
+  };
 
   return (
     <div className="main-area">
       <div className="header">
-        <div>
-          <h1>Create a New Listing</h1>
-        </div>
+        <h1>Create a New Listing</h1>
       </div>
 
       <div className="form-card">
-        {/* Product Name + Category */}
         <div className="form-row">
           <div className="form-group">
             <label>Product Name</label>
@@ -63,7 +88,6 @@ export default function AddListing() {
           </div>
         </div>
 
-        {/* Description */}
         <div className="form-group">
           <label>Detailed Description</label>
           <textarea
@@ -73,7 +97,6 @@ export default function AddListing() {
           ></textarea>
         </div>
 
-        {/* Price */}
         <div className="form-group small">
           <label>Price</label>
           <input
@@ -84,10 +107,8 @@ export default function AddListing() {
           />
         </div>
 
-        {/* Upload Photos */}
         <div className="form-group">
           <label>Product Photos</label>
-
           <label className="upload-box">
             <FiUpload className="upload-icon" />
             <div>Click to upload or drag and drop</div>
@@ -101,7 +122,6 @@ export default function AddListing() {
             />
           </label>
 
-          {/* Preview images */}
           <div className="preview-row">
             {images.map((img, index) => (
               <img key={index} src={img.preview} alt="" className="preview-img" />
@@ -109,7 +129,6 @@ export default function AddListing() {
           </div>
         </div>
 
-        {/* Buttons */}
         <div className="buttons-row">
           <button className="btn-secondary">Save as Draft</button>
           <button className="btn-primary" onClick={publishListing}>

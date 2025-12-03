@@ -1,24 +1,26 @@
-import React, { useState } from 'react'
-import Header from '../Components/Header'
-import DashboardCards from '../Components/DashboardCards'
-import ListingsTable from '../Components/ListingsTable'
-import RecentActivity from '../Components/RecentActivity'
-// REMOVE this line: import Sidebar from "./Components/Sidebar.jsx";
+import React, { useState } from "react";
+import Header from "../Components/Header";
+import DashboardCards from "../Components/DashboardCards";
+import ListingsTable from "../Components/ListingsTable";
+import RecentActivity from "../Components/RecentActivity";
 
-export default function Dashboard() {
+export default function Dashboard({ listings, activities, onDeleteListing }) {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
     <div className="app-root">
-      {/* REMOVE this line: <Sidebar /> */}
       <main className="main-area">
         <Header setSearchQuery={setSearchQuery} />
-        <DashboardCards />
+        <DashboardCards listings={listings} />
         <section className="content-grid">
-          <ListingsTable searchQuery={searchQuery} />
-          <RecentActivity />
+          <ListingsTable
+            searchQuery={searchQuery}
+            listings={listings}
+            onDeleteListing={onDeleteListing}
+          />
+          <RecentActivity activities={activities} />
         </section>
       </main>
     </div>
-  )
+  );
 }

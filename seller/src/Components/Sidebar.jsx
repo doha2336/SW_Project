@@ -22,7 +22,7 @@ export default function Sidebar(){
         </NavLink>
         <button className="nav-item"><FiPackage/> <span>Orders</span></button>
         <button className="nav-item"><FiMail/> <span>Messages</span></button>
-        <button className="nav-item"><FiBarChart2/> <span>Analytics</span></button>
+        {/*<button className="nav-item"><FiBarChart2/> <span>Analytics</span></button>*/}
         <button className="nav-item"><FiSettings/> <span>Settings</span></button>
       </nav>
       

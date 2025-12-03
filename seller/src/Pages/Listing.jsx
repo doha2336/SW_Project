@@ -1,30 +1,36 @@
-import React from 'react';
+// src/Pages/Listing.jsx
+import React, { useEffect, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { apiService } from '../Services/api';
 
 export default function Listings() {
-  // Sample listings data
-  const listings = [
-    { id: 1, name: "Antique Wooden Chair", price: "$120", status: "Active", date: "2024-01-15", category: "Furniture" },
-    { id: 2, name: "Vintage Oak Planks", price: "$80", status: "Active", date: "2024-01-10", category: "Wood" },
-    { id: 3, name: "Reclaimed Metal Pipes", price: "$60", status: "Sold", date: "2024-01-05", category: "Metal" },
-    { id: 4, name: "Set of Ceramic Mugs", price: "$45", status: "Expired", date: "2023-12-20", category: "Home" },
-    { id: 5, name: "Antique Brass Lamp", price: "$95", status: "Active", date: "2024-01-12", category: "Lighting" },
-  ];
+  const [listings, setListings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  const getStatusColor = (status) => {
-    switch(status) {
-      case 'Active': return '#e9f7ea';
-      case 'Sold': return '#f0f0f0';
-      case 'Expired': return '#ffe6e6';
-      default: return '#f0f0f0';
+  const loadListings = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await apiService.getListings();
+      setListings(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-  };
+  }, []);
 
-  const getStatusTextColor = (status) => {
-    switch(status) {
-      case 'Active': return '#2b7a3b';
-      case 'Sold': return '#555';
-      case 'Expired': return '#d32f2f';
-      default: return '#555';
+  useEffect(() => {
+    loadListings();
+  }, [loadListings]);
+
+  const deleteListing = async (id) => {
+    if (!window.confirm('Delete this listing?')) return;
+    try {
+      await apiService.deleteListing(id);
+      await loadListings();
+    } catch (err) {
+      alert('Failed to delete: ' + err.message);
     }
   };
 
@@ -44,59 +50,58 @@ export default function Listings() {
             <div className="stat-label">Total Listings</div>
           </div>
           <div className="stat-card">
-            <div className="stat-number">{listings.filter(l => l.status === 'Active').length}</div>
+            <div className="stat-number">{listings.filter(l => l.status === 'active').length}</div>
             <div className="stat-label">Active</div>
           </div>
           <div className="stat-card">
-            <div className="stat-number">{listings.filter(l => l.status === 'Sold').length}</div>
+            <div className="stat-number">{listings.filter(l => l.status === 'sold').length}</div>
             <div className="stat-label">Sold</div>
           </div>
         </div>
 
         <div className="table-card">
-          <table>
-            <thead>
-              <tr>
-                <th>Product Name</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Status</th>
-                <th>Date Posted</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {listings.map((listing) => (
-                <tr key={listing.id}>
-                  <td>
-                    <div className="product-info">
-                      <div className="product-name">{listing.name}</div>
-                    </div>
-                  </td>
-                  <td>{listing.category}</td>
-                  <td className="price">{listing.price}</td>
-                  <td>
-                    <span 
-                      className="status-badge"
-                      style={{
-                        backgroundColor: getStatusColor(listing.status),
-                        color: getStatusTextColor(listing.status)
-                      }}
-                    >
-                      {listing.status}
-                    </span>
-                  </td>
-                  <td>{listing.date}</td>
-                  <td>
-                    <div className="actions">
-                      <button className="action-btn edit">Edit</button>
-                      <button className="action-btn delete">Delete</button>
-                    </div>
-                  </td>
+          {loading ? <div>Loading...</div> : (
+            <table>
+              <thead>
+                <tr>
+                  <th>Product Name</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Status</th>
+                  <th>Date Posted</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {listings.map((listing) => (
+                  <tr key={listing.id}>
+                    <td>
+                      <div className="product-info">
+                        <div className="product-name">{listing.name}</div>
+                      </div>
+                    </td>
+                    <td>{listing.category}</td>
+                    <td className="price">${Number(listing.price).toFixed(2)}</td>
+                    <td>{listing.status}</td>
+                    <td>{new Date(listing.created_at).toLocaleDateString()}</td>
+                    <td>
+                      <div className="actions">
+                        <button className="action-btn view" onClick={() => navigate(`/product/${listing.id}`)}>View</button>
+                        <button className="action-btn delete" onClick={() => deleteListing(listing.id)}>Delete</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                {listings.length === 0 && (
+                  <tr>
+                    <td colSpan="6" style={{ textAlign: 'center', padding: '40px' }}>
+                      No listings found. Create your first listing!
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>
