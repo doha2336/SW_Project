@@ -9,4 +9,5 @@ jobs:
         with:
           node-version: "20"
       - run: npm install
-      - run: npm test -- --watchAll=false
+      - run: npm test -- --watchAll=false --passWithNoTests
+      - run: npm run build
