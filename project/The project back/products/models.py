@@ -14,6 +14,8 @@ class Product(models.Model):
     stock = models.PositiveIntegerField(verbose_name="Stock")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated At")
+    category = models.CharField(max_length=32, default='uncategorized', verbose_name="Category")
+    image = models.ImageField(upload_to='products/', null=True, blank=True, verbose_name="Product Image")
 
     class Meta:
         ordering = ['-created_at']

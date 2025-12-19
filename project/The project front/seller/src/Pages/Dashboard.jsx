@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardCards from "../Components/DashboardCards";
 
-export default function Dashboard() {
+export default function Dashboard({ listings = [] }) {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,11 +43,26 @@ export default function Dashboard() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td colSpan="4" className="no-data">
-                No listings found matching your search.
-              </td>
-            </tr>
+            {listings && listings.length > 0 ? (
+              listings.slice(0, 5).map((listing) => (
+                <tr key={listing.id}>
+                  <td>
+                    <div className="product-info">
+                      <div className="product-name">{listing.name}</div>
+                    </div>
+                  </td>
+                  <td>{listing.category}</td>
+                  <td className="price">${Number(listing.price).toFixed(2)}</td>
+                  <td>{listing.status || 'active'}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" className="no-data">
+                  No listings found. Create your first listing!
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

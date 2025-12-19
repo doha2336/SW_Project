@@ -1,20 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function PurchaseNotifications() {
   const navigate = useNavigate();
-  const [notifications, setNotifications] = useState([]);
   const [filter, setFilter] = useState('all'); // all, unread, orders, messages
 
-  // Load notifications from localStorage
-  useEffect(() => {
-    const savedNotifications = JSON.parse(localStorage.getItem('notifications')) || [];
-    setNotifications(savedNotifications);
-  }, []);
+  const [notifications, setNotifications] = useState(() => {
+    const existing = JSON.parse(localStorage.getItem('notifications')) || [];
+    if (existing && existing.length) return existing;
 
-  // Sample notifications data structure
-  // In real app, these would come from backend
-  useEffect(() => {
     const sampleNotifications = [
       {
         id: 1,
@@ -63,13 +57,9 @@ export default function PurchaseNotifications() {
       }
     ];
 
-    // Only set if no notifications exist
-    const existing = JSON.parse(localStorage.getItem('notifications'));
-    if (!existing || existing.length === 0) {
-      localStorage.setItem('notifications', JSON.stringify(sampleNotifications));
-      setNotifications(sampleNotifications);
-    }
-  }, []);
+    localStorage.setItem('notifications', JSON.stringify(sampleNotifications));
+    return sampleNotifications;
+  });
 
   const markAsRead = (id) => {
     const updated = notifications.map(notif =>
@@ -272,7 +262,7 @@ const styles = {
     margin: 0,
   },
   backButton: {
-    background: 'none',
+    backgroundColor: 'transparent',
     border: 'none',
     color: '#8B4513',
     fontSize: '16px',

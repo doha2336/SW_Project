@@ -36,7 +36,7 @@ export default function ProductDetails() {
   // Fallback if product not yet loaded
   const fallback = { id: 0, name: 'Loading...', price: 0, category: 'Uncategorized', description: '' };
   const current = product || fallback;
-  const images = [product ? product.image || product.id : product1, product1, product2, product3];
+  const images = [product ? product.image || product.id : product1, product1, product2, product3, product4, product5, product6, product7, product8, product9];
 
   const features = [
     'High quality materials',

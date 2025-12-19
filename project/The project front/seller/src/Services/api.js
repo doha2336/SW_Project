@@ -26,7 +26,10 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   const token = getAccess();
   if (token) config.headers = { ...config.headers, Authorization: `Bearer ${token}` };
-  config.headers = { 'Content-Type': 'application/json', ...config.headers };
+  // If we're uploading files with FormData, don't set JSON content-type — axios will set the multipart boundary
+  if (!(config.data instanceof FormData)) {
+    config.headers = { 'Content-Type': 'application/json', ...config.headers };
+  }
   return config;
 });
 
@@ -44,7 +47,7 @@ api.interceptors.response.use(
       const refreshToken = getRefresh();
       if (!refreshToken) { clearTokens(); return Promise.reject(error); }
       if (isRefreshing) {
-        return new Promise((resolve, reject) => subscribe((token) => {
+        return new Promise((resolve) => subscribe((token) => {
           original.headers.Authorization = `Bearer ${token}`;
           resolve(api(original));
         }));
@@ -97,10 +100,12 @@ async function getListing(id) {
   return resp.data;
 }
 async function createListing(data) {
+  // Accept FormData for image uploads
   const resp = await api.post('/products/', data);
   return resp.data;
 }
 async function updateListing(id, data) {
+  // Accept FormData for image uploads/updates
   const resp = await api.put(`/products/${id}/`, data);
   return resp.data;
 }
@@ -113,7 +118,7 @@ async function getActivities() {
   try {
     const resp = await api.get('/activities/');
     return resp.data;
-  } catch (e) {
+  } catch {
     // no backend activities endpoint; return a sensible default
     return [];
   }
@@ -132,6 +137,12 @@ async function getSellerOrders() {
   const resp = await api.get('/orders/seller/');
   return resp.data;
 }
+async function getOrder(id) {
+  const resp = await api.get(`/orders/${id}/`);
+  // API returns a list for the detail view (ListAPIView used) so normalize
+  if (Array.isArray(resp.data)) return resp.data[0] || null;
+  return resp.data;
+}
 
 export const apiService = {
   login,
@@ -146,5 +157,6 @@ export const apiService = {
   createOrder,
   getMyOrders,
   getSellerOrders,
+  getOrder,
 };
 export default apiService;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiService } from '@seller/Services/api';
+import { useAuth } from '../../src/useAuth';
 
 export default function Cart() {
   const navigate = useNavigate();
@@ -39,14 +40,21 @@ export default function Cart() {
 
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
+  const { logout } = useAuth();
+
   return (
     <div style={styles.container}>
       {/* Header matching Buyer Dashboard */}
       <header style={styles.header}>
         <h1 style={styles.logo}>ReValue</h1>
-        <button style={styles.backButton} onClick={() => navigate('/buyer')}>
-          ← Back to Dashboard
-        </button>
+        <div>
+          <button style={styles.logoutButton} onClick={() => { logout(); navigate('/'); }}>
+            Logout
+          </button>
+          <button style={styles.backButton} onClick={() => navigate('/buyer')}>
+            ← Back to Dashboard
+          </button>
+        </div>
       </header>
 
       <div style={styles.content}>
@@ -205,12 +213,14 @@ export default function Cart() {
                       alert('Order placed successfully!');
                       navigate('/buyer/purchases');
                     } catch (e) {
-                      console.error('Checkout error', e);
+                      console.error('Checkout error', e.response?.data || e);
+                      const backendMsg = e.response?.data;
                       if (e.response && e.response.status === 401) {
                         alert('Please log in before checking out.');
                         navigate('/login');
                       } else {
-                        alert('Failed to place order. Please try again later.');
+                        const msg = backendMsg?.detail || backendMsg?.error || JSON.stringify(backendMsg) || e.message;
+                        alert('Failed to place order: ' + msg);
                       }
                     }
                   }}
@@ -289,13 +299,34 @@ const styles = {
     margin: 0,
   },
   backButton: {
-    background: 'none',
+    backgroundColor: 'transparent',
     border: 'none',
     color: '#8B4513',
     fontSize: '16px',
     cursor: 'pointer',
     fontWeight: 600,
     padding: '8px 16px',
+    borderRadius: '8px',
+    transition: 'all 0.2s',
+  },
+  logoutButton: {
+    backgroundColor: 'transparent',
+    border: '2px solid #8B4513',
+    color: '#8B4513',
+    fontSize: '14px',
+    cursor: 'pointer',
+    fontWeight: 600,
+    padding: '6px 12px',
+    borderRadius: '8px',
+  },
+  clearButton: {
+    backgroundColor: 'transparent',
+    border: '2px solid #e74c3c',
+    color: '#e74c3c',
+    fontSize: '14px',
+    cursor: 'pointer',
+    fontWeight: 600,
+    padding: '10px 20px',
     borderRadius: '8px',
     transition: 'all 0.2s',
   },
@@ -321,17 +352,7 @@ const styles = {
     color: '#7f8c8d',
     margin: 0,
   },
-  clearButton: {
-    background: 'transparent',
-    border: '2px solid #e74c3c',
-    color: '#e74c3c',
-    fontSize: '14px',
-    cursor: 'pointer',
-    fontWeight: 600,
-    padding: '10px 20px',
-    borderRadius: '8px',
-    transition: 'all 0.2s',
-  },
+
   mainContent: {
     display: 'grid',
     gridTemplateColumns: '1fr 400px',

@@ -51,7 +51,7 @@ export default function ProductDetails() {
   return (
     <div className="main-area">
       <div className="header" style={{ marginBottom: 20 }}>
-        <button className="back-btn" onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+        <button className="back-btn" onClick={() => navigate(-1)} style={{ backgroundColor: 'transparent', border: 'none', cursor: 'pointer' }}>
           <FiArrowLeft /> Back
         </button>
         <h1 style={{ marginTop: 10 }}>{product.name}</h1>
@@ -110,7 +110,7 @@ export default function ProductDetails() {
                   <FiCheck /> Mark as Sold
                 </button>
               )}
-              <button className="btn-edit" onClick={() => alert('Edit page not implemented yet')}>
+              <button className="btn-edit" onClick={() => navigate(`/seller/edit/${product.id}`)}>
                 <FiEdit /> Edit Listing
               </button>
               <button className="btn-danger" onClick={handleDelete}>

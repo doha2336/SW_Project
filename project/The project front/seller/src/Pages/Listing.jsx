@@ -65,6 +65,7 @@ export default function Listings() {
               <thead>
                 <tr>
                   <th>Product Name</th>
+                  <th>Image</th>
                   <th>Category</th>
                   <th>Price</th>
                   <th>Status</th>
@@ -80,6 +81,7 @@ export default function Listings() {
                         <div className="product-name">{listing.name}</div>
                       </div>
                     </td>
+                    <td>{listing.image ? <img src={listing.image} alt="" style={{width:64, height:64, objectFit:'cover', borderRadius:8}} /> : <div style={{width:64, height:64, backgroundColor:'#f1f1f1', borderRadius:8}}/>}</td>
                     <td>{listing.category}</td>
                     <td className="price">${Number(listing.price).toFixed(2)}</td>
                     <td>{listing.status}</td>
@@ -87,6 +89,7 @@ export default function Listings() {
                     <td>
                       <div className="actions">
                         <button className="action-btn view" onClick={() => navigate(`/seller/product/${listing.id}`)}>View</button>
+                        <button className="action-btn edit" onClick={() => navigate(`/seller/edit/${listing.id}`)}>Edit</button>
                         <button className="action-btn delete" onClick={() => deleteListing(listing.id)}>Delete</button>
                       </div>
                     </td>

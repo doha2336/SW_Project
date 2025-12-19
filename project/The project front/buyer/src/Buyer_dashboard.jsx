@@ -10,10 +10,10 @@ import product6 from './assets/product6.jpeg';
 import product7 from './assets/product7.jpg.jpeg';
 import product8 from './assets/product8.jpg.jpeg';  
 import product9 from './assets/product9.jpg.jpeg';
-import { useEffect, useState } from 'react';
 import { apiService } from '@seller/Services/api';
+import { useAuth } from '../../src/useAuth';
 
-export const styles = {
+const styles = {
   app: {
     maxWidth: '1200px',
     margin: '0 auto',
@@ -191,6 +191,7 @@ export const styles = {
 
 const BuyerDashboard = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [activeCategory, setActiveCategory] = useState('All');
   const [activeNav, setActiveNav] = useState('Browse');
   const [cartCount, setCartCount] = useState(0);
@@ -242,7 +243,7 @@ const BuyerDashboard = () => {
     };
   }, []);
 
-  const categories = ['All', 'Electronics', 'Furniture', 'Clothing'];
+  const categories = ['All', 'Wood', 'Metal', 'Furniture', 'Electronics'];
 
   const [products, setProducts] = useState([]);
 
@@ -257,7 +258,7 @@ const BuyerDashboard = () => {
       }
     }
     load();
-    return () => { mounted = false };
+    return () => { mounted = false; };
   }, []);
 
   const getImageForProduct = (product, idx) => {
@@ -265,12 +266,12 @@ const BuyerDashboard = () => {
     // choose one deterministically
     const i = product.id ? (product.id % imgs.length) : (idx % imgs.length);
     return imgs[i];
-  }
+  };
 
   const filteredProducts =
     activeCategory === 'All'
       ? products
-      : products.filter((product) => (product.category || 'Uncategorized') === activeCategory);
+      : products.filter((product) => (product.category || 'uncategorized').toLowerCase() === activeCategory.toLowerCase());
 
   const navItems = ['Browse', 'My Purchases', 'Notifications', 'Sell', 'Profile'];
 
@@ -359,6 +360,19 @@ const BuyerDashboard = () => {
               <span style={styles.cartBadge}>{cartCount}</span>
             )}
           </button>
+          
+          {/* Logout Button */}
+          <button
+            style={{
+              ...styles.cartButton,
+              border: '2px solid transparent',
+              color: '#8B4513',
+              backgroundColor: 'transparent'
+            }}
+            onClick={() => { logout(); navigate('/'); }}
+          >
+            Logout
+          </button>
         </nav>
       </header>
 
@@ -387,7 +401,7 @@ const BuyerDashboard = () => {
 
       {/* Products Grid */}
       <section style={styles.productsGrid}>
-        {filteredProducts.map((product) => (
+        {filteredProducts.map((product, index) => (
           <div 
             key={product.id} 
             style={styles.productCard}

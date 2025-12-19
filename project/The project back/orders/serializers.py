@@ -13,11 +13,19 @@ class OrderSerializer(serializers.ModelSerializer):
         read_only_fields = ['buyer', 'total_price', 'status', 'buyer_info', 'product_info']
 
     def get_product_info(self, obj):
+        request = self.context.get('request')
+        image_url = None
+        if getattr(obj.product, 'image', None):
+            try:
+                image_url = request.build_absolute_uri(obj.product.image.url)
+            except Exception:
+                image_url = obj.product.image.url
         return {
             'id': obj.product.id,
             'name': obj.product.name,
             'price': str(obj.product.price),
             'seller_id': obj.product.seller_id,
+            'image': image_url,
         }
 
     def get_buyer_info(self, obj):

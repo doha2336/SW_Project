@@ -36,16 +36,20 @@ export default function Orders(){
             {orders.map(order => (
               <div key={order.id} style={{borderBottom: '1px solid #eee', padding: 12}}>
                 <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                  <div>
-                    <strong>Order #{order.id}</strong>
-                    <div>Product: {order.product_info?.name}</div>
-                    <div>Quantity: {order.quantity}</div>
-                    <div>Buyer: {order.buyer_info?.username} ({order.buyer_info?.email})</div>
+                  <div style={{display: 'flex', gap: 12, alignItems: 'center'}}>
+                    {order.product_info?.image ? <img src={order.product_info.image} alt="" style={{width:80, height:80, objectFit:'cover', borderRadius:8}} /> : <div style={{width:80, height:80, backgroundColor:'#f1f1f1', borderRadius:8}}/>}
+                    <div>
+                      <strong>Order #{order.id}</strong>
+                      <div>Product: {order.product_info?.name}</div>
+                      <div>Quantity: {order.quantity}</div>
+                      <div>Buyer: {order.buyer_info?.username} ({order.buyer_info?.email})</div>
+                    </div>
                   </div>
                   <div style={{textAlign: 'right'}}>
                     <div>Total: ${order.total_price}</div>
                     <div>Status: {order.status}</div>
                     <div>Date: {new Date(order.created_at).toLocaleString()}</div>
+                    <button className="action-btn" style={{marginTop:8}} onClick={() => window.location.href = `/seller/orders/${order.id}`}>View</button>
                   </div>
                 </div>
               </div>

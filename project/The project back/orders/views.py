@@ -31,3 +31,15 @@ class SellerOrdersView(ListAPIView):
     def get_queryset(self):
         return Order.objects.filter(product__seller=self.request.user).select_related('product', 'buyer')
 
+
+class OrderDetailView(ListAPIView):
+    """Retrieve a single order if the request user is the buyer or the seller of the product."""
+    serializer_class = OrderSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Order.objects.filter(models.Q(buyer=user) | models.Q(product__seller=user)).select_related('product', 'buyer')
+
+    # Use the default lookup on PK provided by the URL; ListAPIView will still return an iterable - we'll keep the view simple and the frontend will pick the first item for the order
+

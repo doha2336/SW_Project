@@ -11,6 +11,8 @@ import AddListing from "@seller/Pages/AddListing.jsx";
 import Listings from "@seller/Pages/Listing.jsx";
 import SellerProductDetails from "@seller/Pages/ProductDetails.jsx";
 import Orders from "@seller/Pages/Orders.jsx";
+import SellerOrderDetails from "@seller/Pages/SellerOrderDetails.jsx";
+import EditListing from "@seller/Pages/EditListing.jsx";
 import Messages from "@seller/Pages/Messages.jsx";
 import Settings from "@seller/Pages/Settings.jsx";
 import BuyerProductDetails from "@buyer/ProductDetails.jsx";
@@ -22,6 +24,7 @@ import SignUpPage from "@buyer/SignUp.jsx";
 import Login from "@buyer/login.jsx";
 import BuyerDashboard from "@buyer/Buyer_dashboard.jsx";
 import BuyerPurchases from "@buyer/BuyerPurchases.jsx";
+import BuyerOrderDetails from "@buyer/BuyerOrderDetails.jsx";
 
 // ⭐ Seller layout — Sidebar always visible
 function SellerLayout() {
@@ -111,6 +114,7 @@ function WTVMarket() {
         {/* Buyer */}
         <Route path="/buyer" element={<BuyerDashboard />} />
         <Route path="/buyer/purchases" element={<BuyerPurchases />} />
+        <Route path="/buyer/purchases/:id" element={<ProtectedRoute allowedRole="buyer"><BuyerOrderDetails /></ProtectedRoute>} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/notifications" element={<PurchaseNotifications />} />
 
@@ -146,10 +150,12 @@ function WTVMarket() {
           />
 
           <Route path="orders" element={<Orders />} />
+          <Route path="orders/:id" element={<SellerOrderDetails />} />
           <Route path="messages" element={<Messages />} />
           <Route path="settings" element={<Settings />} />
 
           <Route path="product/:id" element={<SellerProductDetails />} />
+          <Route path="edit/:id" element={<EditListing />} />
         </Route>
 
         {/* Shared Product Route */}

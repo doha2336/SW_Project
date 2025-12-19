@@ -29,14 +29,18 @@ export default function AddListing({ onListingAdded }) {
 
     try {
       // Build listing object matching backend Product model fields
-      const listingData = {
-        name,
-        description,
-        price,
-        stock,
-      };
+      // Build FormData for file upload
+      const form = new FormData();
+      form.append('name', name);
+      form.append('description', description);
+      form.append('price', price);
+      form.append('stock', stock);
+      form.append('category', category || 'uncategorized');
+      if (images && images.length && images[0].file) {
+        form.append('image', images[0].file);
+      }
 
-      await apiService.createListing(listingData);
+      await apiService.createListing(form);
 
       alert("Listing Published!");
 
@@ -81,6 +85,7 @@ export default function AddListing({ onListingAdded }) {
               <option value="wood">Wood</option>
               <option value="metal">Metal</option>
               <option value="furniture">Furniture</option>
+              <option value="electronics">Electronics</option>
             </select>
           </div>
         </div>

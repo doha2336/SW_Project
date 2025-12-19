@@ -4,9 +4,6 @@ import { apiService } from '@seller/Services/api';
 
 // Import product images (reusing from dashboard)
 import product1 from './assets/product1.jpg.jpeg';
-import product2 from './assets/product2.jpg.jpeg';
-import product3 from './assets/product3.jpg.jpeg';
-import product7 from './assets/product7.jpg.jpeg';
 
 export default function BuyerPurchases() {
   const navigate = useNavigate();
@@ -25,38 +22,6 @@ export default function BuyerPurchases() {
     })();
     return () => { mounted = false };
   }, []);
-    {
-      id: 'ORD-001',
-      date: '2025-11-25',
-      items: [
-        { name: 'Vintage Leather Chair', price: 150, quantity: 1, img: product1 }
-      ],
-      total: 150,
-      status: 'Delivered',
-      deliveryDate: '2025-11-28',
-    },
-    {
-      id: 'ORD-002',
-      date: '2025-11-26',
-      items: [
-        { name: 'Used iPhone 12', price: 300, quantity: 1, img: product2 },
-        { name: 'Wooden Coffee Table', price: 80, quantity: 1, img: product3 }
-      ],
-      total: 380,
-      status: 'Shipped',
-      estimatedDelivery: '2025-12-02',
-    },
-    {
-      id: 'ORD-003',
-      date: '2025-11-28',
-      items: [
-        { name: 'Vintage Camera', price: 120, quantity: 2, img: product7 }
-      ],
-      total: 240,
-      status: 'Processing',
-      estimatedDelivery: '2025-12-05',
-    },
-  ];
 
   const statuses = ['All', 'Processing', 'Shipped', 'Delivered'];
 
@@ -143,7 +108,7 @@ export default function BuyerPurchases() {
                 <div style={styles.itemsList}>
                   <div style={styles.itemRow}>
                     <div style={styles.itemImage}>
-                      <img src={product1} alt={purchase.product_info?.name || 'Product'} style={styles.itemImg} />
+                      <img src={purchase.product_info?.image || product1} alt={purchase.product_info?.name || 'Product'} style={styles.itemImg} />
                     </div>
                     <div style={styles.itemDetails}>
                       <h4 style={styles.itemName}>{purchase.product_info?.name}</h4>
@@ -168,7 +133,7 @@ export default function BuyerPurchases() {
 
                 {/* Action Buttons */}
                 <div style={styles.actionButtons}>
-                  <button style={styles.viewDetailsBtn}>
+                  <button style={styles.viewDetailsBtn} onClick={() => navigate(`/buyer/purchases/${purchase.id}`)}>
                     View Details
                   </button>
                 </div>
@@ -205,7 +170,7 @@ const styles = {
     margin: 0,
   },
   backButton: {
-    background: 'none',
+    backgroundColor: 'transparent',
     border: 'none',
     color: '#8B4513',
     fontSize: '16px',
