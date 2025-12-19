@@ -10,6 +10,8 @@ import product6 from './assets/product6.jpeg';
 import product7 from './assets/product7.jpg.jpeg';
 import product8 from './assets/product8.jpg.jpeg';  
 import product9 from './assets/product9.jpg.jpeg';
+import { useEffect, useState } from 'react';
+import { apiService } from '@seller/Services/api';
 
 export const styles = {
   app: {
@@ -242,22 +244,33 @@ const BuyerDashboard = () => {
 
   const categories = ['All', 'Electronics', 'Furniture', 'Clothing'];
 
-  const products = [
-    { id: 1, name: 'Vintage Leather Chair', price: 150, category: 'Furniture', img: product1 },
-    { id: 2, name: 'Used iPhone 12', price: 300, category: 'Electronics', img: product2 },
-    { id: 3, name: 'Wooden Coffee Table', price: 80, category: 'Furniture', img: product3 },
-    { id: 4, name: 'Designer Handbag', price: 250, category: 'Clothing', img: product4 },
-    { id: 5, name: 'Set of Kitchen Knives', price: 45, category: 'Furniture', img: product5 },
-    { id: 6, name: 'Mountain Bike', price: 200, category: 'Electronics', img: product6 },
-    { id: 7, name: 'Vintage Camera', price: 120, category: 'Electronics', img: product7 },
-    { id: 8, name: 'Leather Jacket', price: 180, category: 'Clothing', img: product8 },
-    { id: 9, name: 'Office Desk', price: 95, category: 'Furniture', img: product9 },
-  ];
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      try {
+        const data = await apiService.getListings();
+        if (mounted) setProducts(data || []);
+      } catch (e) {
+        console.error('Could not load products', e);
+      }
+    }
+    load();
+    return () => { mounted = false };
+  }, []);
+
+  const getImageForProduct = (product, idx) => {
+    const imgs = [product1, product2, product3, product4, product5, product6, product7, product8, product9];
+    // choose one deterministically
+    const i = product.id ? (product.id % imgs.length) : (idx % imgs.length);
+    return imgs[i];
+  }
 
   const filteredProducts =
     activeCategory === 'All'
       ? products
-      : products.filter((product) => product.category === activeCategory);
+      : products.filter((product) => (product.category || 'Uncategorized') === activeCategory);
 
   const navItems = ['Browse', 'My Purchases', 'Notifications', 'Sell', 'Profile'];
 
@@ -391,7 +404,7 @@ const BuyerDashboard = () => {
             <div
               style={{
                 ...styles.productImage,
-                backgroundImage: `url(${product.img})`,
+                backgroundImage: `url(${getImageForProduct(product, index)})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',

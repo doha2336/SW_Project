@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { apiService } from '@seller/Services/api';
 
 // Import product images (reusing from dashboard)
 import product1 from './assets/product1.jpg.jpeg';
@@ -10,9 +11,20 @@ import product7 from './assets/product7.jpg.jpeg';
 export default function BuyerPurchases() {
   const navigate = useNavigate();
   const [filterStatus, setFilterStatus] = useState('All');
+  const [purchases, setPurchases] = useState([]);
 
-  // Mock purchase data
-  const purchases = [
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const data = await apiService.getMyOrders();
+        if (mounted) setPurchases((data || []));
+      } catch (e) {
+        console.error('Failed to load purchases', e);
+      }
+    })();
+    return () => { mounted = false };
+  }, []);
     {
       id: 'ORD-001',
       date: '2025-11-25',
@@ -117,8 +129,8 @@ export default function BuyerPurchases() {
                 {/* Order Header */}
                 <div style={styles.orderHeader}>
                   <div style={styles.orderInfo}>
-                    <h3 style={styles.orderId}>Order {purchase.id}</h3>
-                    <p style={styles.orderDate}>Placed on {new Date(purchase.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                    <h3 style={styles.orderId}>Order #{purchase.id}</h3>
+                    <p style={styles.orderDate}>Placed on {new Date(purchase.created_at).toLocaleDateString()}</p>
                   </div>
                   <div style={styles.orderStatus}>
                     <span style={{...styles.statusBadge, ...getStatusStyle(purchase.status)}}>
@@ -129,39 +141,28 @@ export default function BuyerPurchases() {
 
                 {/* Order Items */}
                 <div style={styles.itemsList}>
-                  {purchase.items.map((item, index) => (
-                    <div key={index} style={styles.itemRow}>
-                      <div style={styles.itemImage}>
-                        <img src={item.img} alt={item.name} style={styles.itemImg} />
-                      </div>
-                      <div style={styles.itemDetails}>
-                        <h4 style={styles.itemName}>{item.name}</h4>
-                        <p style={styles.itemQuantity}>Quantity: {item.quantity}</p>
-                      </div>
-                      <div style={styles.itemPrice}>
-                        ${item.price * item.quantity}
-                      </div>
+                  <div style={styles.itemRow}>
+                    <div style={styles.itemImage}>
+                      <img src={product1} alt={purchase.product_info?.name || 'Product'} style={styles.itemImg} />
                     </div>
-                  ))}
+                    <div style={styles.itemDetails}>
+                      <h4 style={styles.itemName}>{purchase.product_info?.name}</h4>
+                      <p style={styles.itemQuantity}>Quantity: {purchase.quantity}</p>
+                    </div>
+                    <div style={styles.itemPrice}>
+                      ${purchase.total_price}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Order Footer */}
                 <div style={styles.orderFooter}>
                   <div style={styles.deliveryInfo}>
-                    {purchase.status === 'Delivered' && (
-                      <p style={styles.deliveryText}>
-                        ✓ Delivered on {new Date(purchase.deliveryDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                      </p>
-                    )}
-                    {purchase.status !== 'Delivered' && (
-                      <p style={styles.deliveryText}>
-                        📦 Estimated delivery: {new Date(purchase.estimatedDelivery).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                      </p>
-                    )}
+                    <p style={styles.deliveryText}>Status: {purchase.status}</p>
                   </div>
                   <div style={styles.totalSection}>
                     <span style={styles.totalLabel}>Total:</span>
-                    <span style={styles.totalAmount}>${purchase.total}</span>
+                    <span style={styles.totalAmount}>${purchase.total_price}</span>
                   </div>
                 </div>
 
@@ -170,16 +171,6 @@ export default function BuyerPurchases() {
                   <button style={styles.viewDetailsBtn}>
                     View Details
                   </button>
-                  {purchase.status === 'Delivered' && (
-                    <button style={styles.reviewBtn}>
-                      Write Review
-                    </button>
-                  )}
-                  {purchase.status !== 'Delivered' && (
-                    <button style={styles.trackBtn}>
-                      Track Order
-                    </button>
-                  )}
                 </div>
               </div>
             ))

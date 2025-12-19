@@ -119,6 +119,20 @@ async function getActivities() {
   }
 }
 
+// Orders
+async function createOrder(data) {
+  const resp = await api.post('/orders/', data);
+  return resp.data;
+}
+async function getMyOrders() {
+  const resp = await api.get('/orders/');
+  return resp.data;
+}
+async function getSellerOrders() {
+  const resp = await api.get('/orders/seller/');
+  return resp.data;
+}
+
 export const apiService = {
   login,
   register,
@@ -129,5 +143,8 @@ export const apiService = {
   updateListing,
   deleteListing,
   getActivities,
+  createOrder,
+  getMyOrders,
+  getSellerOrders,
 };
 export default apiService;

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { apiService } from '@seller/Services/api';
 
 export default function Cart() {
   const navigate = useNavigate();
@@ -192,7 +193,27 @@ export default function Cart() {
 
                 <button 
                   style={styles.checkoutButton} 
-                  onClick={() => alert('Proceeding to checkout!')}
+                  onClick={async () => {
+                    if (!confirm('Confirm purchase and proceed to checkout?')) return;
+                    try {
+                      for (const item of cartItems) {
+                        await apiService.createOrder({ product: item.id, quantity: item.quantity });
+                      }
+                      // Clear cart and navigate to purchases
+                      setCartItems([]);
+                      localStorage.removeItem('cart');
+                      alert('Order placed successfully!');
+                      navigate('/buyer/purchases');
+                    } catch (e) {
+                      console.error('Checkout error', e);
+                      if (e.response && e.response.status === 401) {
+                        alert('Please log in before checking out.');
+                        navigate('/login');
+                      } else {
+                        alert('Failed to place order. Please try again later.');
+                      }
+                    }
+                  }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-2px)';
                     e.currentTarget.style.boxShadow = '0 6px 20px rgba(139, 69, 19, 0.3)';

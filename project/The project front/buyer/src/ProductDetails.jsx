@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 // Import product images (use the same imports as Buyer Dashboard)
@@ -18,24 +18,25 @@ export default function ProductDetails() {
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
 
-  // Mock products data (should match Buyer Dashboard products)
-  const allProducts = [
-    { id: 1, name: 'Vintage Leather Chair', price: 150, category: 'Furniture', img: product1, description: 'Beautiful vintage leather chair in excellent condition. Perfect for your living room or office.' },
-    { id: 2, name: 'Used iPhone 12', price: 300, category: 'Electronics', img: product2, description: 'Gently used iPhone 12 with 128GB storage. Comes with original charger and case.' },
-    { id: 3, name: 'Wooden Coffee Table', price: 80, category: 'Furniture', img: product3, description: 'Solid wood coffee table with modern design. Great for any living space.' },
-    { id: 4, name: 'Designer Handbag', price: 250, category: 'Clothing', img: product4, description: 'Premium designer handbag in excellent condition.' },
-    { id: 5, name: 'Set of Kitchen Knives', price: 45, category: 'Furniture', img: product5, description: 'Sharp and durable kitchen knife set. Great for daily use.' },
-    { id: 6, name: 'Mountain Bike', price: 200, category: 'Electronics', img: product6, description: 'Reliable mountain bike ready for off-road adventures.' },
-    { id: 7, name: 'Vintage Camera', price: 120, category: 'Electronics', img: product7, description: 'Classic vintage camera for collectors and photography enthusiasts.' },
-    { id: 8, name: 'Leather Jacket', price: 180, category: 'Clothing', img: product8, description: 'Stylish leather jacket in great condition.' },
-    { id: 9, name: 'Office Desk', price: 95, category: 'Furniture', img: product9, description: 'Practical office desk with storage.' },
-  ];
+  // Fetch product data from API
+  const [product, setProduct] = useState(null);
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const data = await import('@seller/Services/api').then(m => m.apiService.getListing(id));
+        if (mounted) setProduct(data);
+      } catch (e) {
+        console.error('Failed to load product', e);
+      }
+    })();
+    return () => { mounted = false };
+  }, [id]);
 
-  // Find product by id
-  const product = allProducts.find(p => p.id === parseInt(id)) || allProducts[0];
-
-  // Multiple images for gallery (using same image for demo)
-  const images = [product.img, product.img, product.img, product.img];
+  // Fallback if product not yet loaded
+  const fallback = { id: 0, name: 'Loading...', price: 0, category: 'Uncategorized', description: '' };
+  const current = product || fallback;
+  const images = [product ? product.image || product.id : product1, product1, product2, product3];
 
   const features = [
     'High quality materials',
@@ -57,7 +58,7 @@ export default function ProductDetails() {
     const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
     
     // Check if product already exists in cart
-    const existingItemIndex = existingCart.findIndex(item => item.id === product.id);
+    const existingItemIndex = existingCart.findIndex(item => item.id === current.id);
     
     if (existingItemIndex !== -1) {
       // Product exists, update quantity
@@ -65,11 +66,11 @@ export default function ProductDetails() {
     } else {
       // Add new product to cart
       existingCart.push({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        img: product.img,
-        category: product.category,
+        id: current.id,
+        name: current.name,
+        price: current.price,
+        img: current.image || current.id,
+        category: current.category,
         quantity: quantity
       });
     }
@@ -78,7 +79,7 @@ export default function ProductDetails() {
     localStorage.setItem('cart', JSON.stringify(existingCart));
     
     // Show success message and option to view cart
-    const viewCart = window.confirm(`✅ Added ${quantity} "${product.name}" to cart!\n\nView cart now?`);
+    const viewCart = window.confirm(`✅ Added ${quantity} "${current.name}" to cart!\n\nView cart now?`);
     if (viewCart) {
       navigate('/cart');
     }
@@ -89,7 +90,7 @@ export default function ProductDetails() {
     const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
     
     // Check if product already exists in cart
-    const existingItemIndex = existingCart.findIndex(item => item.id === product.id);
+    const existingItemIndex = existingCart.findIndex(item => item.id === current.id);
     
     if (existingItemIndex !== -1) {
       // Product exists, update quantity
@@ -97,11 +98,11 @@ export default function ProductDetails() {
     } else {
       // Add new product to cart
       existingCart.push({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        img: product.img,
-        category: product.category,
+        id: current.id,
+        name: current.name,
+        price: current.price,
+        img: current.image || current.id,
+        category: current.category,
         quantity: quantity
       });
     }
@@ -144,7 +145,7 @@ export default function ProductDetails() {
           <div style={styles.mainImage}>
             <img 
               src={images[selectedImage]} 
-              alt={product.name}
+              alt={current.name}
               style={styles.mainImageImg}
             />
           </div>
@@ -166,22 +167,22 @@ export default function ProductDetails() {
 
         {/* Right side - Product Info */}
         <div style={styles.infoSection}>
-          <div style={styles.categoryBadge}>{product.category}</div>
+          <div style={styles.categoryBadge}>{current.category}</div>
           
-          <h1 style={styles.productTitle}>{product.name}</h1>
+          <h1 style={styles.productTitle}>{current.name}</h1>
           
           <div style={styles.rating}>
             <span style={styles.stars}>★★★★☆</span>
             <span style={styles.ratingText}>(4.0 - 128 reviews)</span>
           </div>
 
-          <div style={styles.price}>${product.price}</div>
+          <div style={styles.price}>${current.price}</div>
 
-          <div style={styles.stockBadge}>✓ In Stock</div>
+          <div style={styles.stockBadge}>{current.stock ? `✓ ${current.stock} In Stock` : '✓ In Stock'}</div>
 
           <div style={styles.section}>
             <h3 style={styles.sectionTitle}>Description</h3>
-            <p style={styles.description}>{product.description}</p>
+            <p style={styles.description}>{current.description}</p>
           </div>
 
           <div style={styles.section}>
