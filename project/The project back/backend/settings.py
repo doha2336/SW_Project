@@ -8,12 +8,13 @@ from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+import os
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ump)4la&k*=9rqe#dko7&_m*o0*eboo4d+8%q0r660-#c#oxc-'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-ump)4la&k*=9rqe#dko7&_m*o0*eboo4d+8%q0r660-#c#oxc-')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
@@ -148,7 +149,6 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = True  # For development only
 
 # Remove in production:
 CORS_ALLOW_ALL_ORIGINS = DEBUG  # Only allow all origins in debug mode
