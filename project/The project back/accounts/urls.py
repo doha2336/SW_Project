@@ -1,8 +1,0 @@
-from django.urls import path
-from .views import RegisterView, MyTokenObtainPairView
-
-urlpatterns = [
-    path("register/", RegisterView.as_view(), name="register"),
-    # Use our email-aware token view so clients can send email or username.
-    path("login/", MyTokenObtainPairView.as_view(), name="login"),
-]
